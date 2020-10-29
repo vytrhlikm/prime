@@ -7,6 +7,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,12 +35,13 @@ public class XLSXRecordsLoader {
                         }
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-
-            System.out.printf("Total records '%d'.", loadedCells.size());
-            System.out.println();
+            catch (FileNotFoundException e) {
+                System.err.printf("Specified file '%s' for was not found.%n", fileLocation);
+            }
+            catch (Exception e) {
+                System.err.printf("Unexpected error: %s%n", e.getMessage());
+            }
         }
     }
 

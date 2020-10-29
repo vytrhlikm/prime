@@ -17,8 +17,7 @@ public class PrimeResolver {
                 BigInteger i = new BigInteger(s);
 
                 if (i.isProbablePrime(100)) {
-                    System.out.printf("Number '%s' is prime.", s);
-                    System.out.println();
+                    System.out.printf("Number '%s' is prime.%n", s);
                 }
             }
         }

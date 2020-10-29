@@ -1,20 +1,35 @@
 package com.vytrhlik;
 
-import com.github.rvesse.airline.Cli;
-import com.github.rvesse.airline.help.Help;
-import com.vytrhlik.commands.FileCommand;
+import com.github.rvesse.airline.SingleCommand;
+import com.github.rvesse.airline.parser.ParseResult;
+import com.github.rvesse.airline.parser.errors.ParseException;
 
 /**
  * Prime app
  */
-@com.github.rvesse.airline.annotations.Cli(name = "prime",
-        description = "CLI application for finding prime numbers from .xlsx file",
-        defaultCommand = Help.class,
-        commands = {FileCommand.class, Help.class})
 public class App {
     public static void main(String[] args) {
-        Cli<Runnable> cli = new Cli<>(App.class);
-        Runnable cmd = cli.parse(args);
-        cmd.run();
+        try {
+            SingleCommand<PrimeCommand> command = SingleCommand.singleCommand(PrimeCommand.class);
+            ParseResult<PrimeCommand> result = command.parseWithResult(args);
+            if (result.wasSuccessful()) {
+                result.getCommand().run();
+            } else {
+                System.err.printf("%d errors encountered:%n", result.getErrors().size());
+                int i = 1;
+                for (ParseException e : result.getErrors()) {
+                    System.err.printf("Error %d: %s%n", i, e.getMessage());
+                    i++;
+                }
+
+                System.err.println();
+
+                com.github.rvesse.airline.help.Help.help(command.getCommandMetadata(), System.err);
+            }
+        } catch (Exception e) {
+            System.err.printf("Unexpected error: %s%" +
+                    "n", e.getMessage());
+            System.exit(1);
+        }
     }
 }
